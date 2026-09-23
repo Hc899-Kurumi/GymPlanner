@@ -2,12 +2,12 @@
 // This web configuration is safe to use in client code. Never put a Firebase
 // Admin private key or service-account JSON file in this repository.
 export const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
+  apiKey: "AIzaSyAWKeSKiZADVVx0dlmmo4WY5OjpSiuQExg",
+  authDomain: "gymp-408a0.firebaseapp.com",
+  projectId: "gymp-408a0",
+  storageBucket: "gymp-408a0.firebasestorage.app",
+  messagingSenderId: "156684104175",
+  appId: "1:156684104175:web:638c8ee0ecce74f650061a"
 };
 
 export const firebaseConfigured = !Object.values(firebaseConfig).some(value => value.startsWith("PASTE_"));
