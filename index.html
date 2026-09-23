@@ -13,13 +13,51 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <section class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-logo" aria-hidden="true">GP</div>
+      <p class="eyebrow">YOUR TRAINING, YOUR DATA</p>
+      <h1>Welcome to GymPlanner</h1>
+      <p class="auth-intro">Sign in to open your routines and workout history.</p>
+
+      <div class="auth-tabs" role="tablist" aria-label="Account action">
+        <button class="auth-tab active" id="loginTab" type="button" role="tab" aria-selected="true">Log in</button>
+        <button class="auth-tab" id="signupTab" type="button" role="tab" aria-selected="false">Sign up</button>
+      </div>
+
+      <form id="authForm">
+        <label class="field">Email address
+          <input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required />
+        </label>
+        <label class="field auth-password-field">Password
+          <input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required />
+        </label>
+        <label class="field" id="confirmPasswordField" hidden>Confirm password
+          <input id="authConfirmPassword" type="password" autocomplete="new-password" minlength="6" placeholder="Enter password again" />
+        </label>
+        <p class="auth-message" id="authMessage" role="alert"></p>
+        <button class="primary wide" id="authSubmit" type="submit">Log in</button>
+        <button class="text-button auth-reset" id="resetPassword" type="button">Forgot password?</button>
+      </form>
+
+      <div class="auth-setup" id="authSetup" hidden>
+        <strong>Firebase setup required</strong>
+        <span>Add your Firebase web configuration to <code>firebase-config.js</code> before accounts can be used.</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="app-shell" id="appShell" hidden>
     <header class="topbar">
       <div>
         <p class="eyebrow" id="todayLabel">TODAY</p>
         <h1>GymPlanner</h1>
       </div>
-      <button class="icon-button" id="themeButton" aria-label="Toggle color theme">◐</button>
+      <div class="topbar-actions">
+        <span class="user-email" id="userEmail"></span>
+        <button class="icon-button" id="themeButton" aria-label="Toggle color theme">◐</button>
+        <button class="logout-button" id="logoutButton" type="button">Log out</button>
+      </div>
     </header>
 
     <main id="app" aria-live="polite"></main>
@@ -34,5 +72,6 @@
 
   <div id="toast" class="toast" role="status"></div>
   <script src="app.js" defer></script>
+  <script type="module" src="auth.js"></script>
 </body>
 </html>
