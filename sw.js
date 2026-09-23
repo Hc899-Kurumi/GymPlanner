@@ -1,5 +1,5 @@
-const CACHE = "gymplanner-v1";
-const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icons/icon.svg"];
+const CACHE = "gymplanner-v2";
+const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./auth.js", "./firebase-config.js", "./manifest.webmanifest", "./icons/icon.svg"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS))));
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))));
 self.addEventListener("fetch", event => {
