@@ -1,4 +1,5 @@
-const STORAGE_KEY = "gymplanner-data-v1";
+const LEGACY_STORAGE_KEY = "gymplanner-data-v1";
+let STORAGE_KEY = null;
 
 const defaultRoutines = [
   { id: "push", day: 1, dayName: "Monday", name: "Chest, Shoulders & Triceps", exercises: [
@@ -20,17 +21,23 @@ const defaultRoutines = [
 ].map(r => ({ ...r, exercises: r.exercises.map((e, i) => ({ id: `${r.id}-${i}`, name: e[0], muscle: e[1], note: e[2] || "", sets: e[1] === "Cardio" ? 1 : 3 })) }));
 
 const initialState = { routines: defaultRoutines, history: [], measurements: [], theme: "dark" };
-let state = loadState();
+let state = structuredClone(initialState);
 let currentView = "today";
 let session = null;
 let workoutClock = null;
 let restClock = null;
 
 function loadState() {
-  try { return { ...initialState, ...JSON.parse(localStorage.getItem(STORAGE_KEY)) }; }
+  if (!STORAGE_KEY) return structuredClone(initialState);
+  try {
+    if (!localStorage.getItem(STORAGE_KEY) && localStorage.getItem(LEGACY_STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, localStorage.getItem(LEGACY_STORAGE_KEY));
+    }
+    return { ...structuredClone(initialState), ...JSON.parse(localStorage.getItem(STORAGE_KEY)) };
+  }
   catch { return structuredClone(initialState); }
 }
-function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function saveState() { if (STORAGE_KEY) localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 function esc(value = "") { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c])); }
 function fmtDate(iso) { return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(iso)); }
 function todayRoutine() { return state.routines.find(r => r.day === new Date().getDay()); }
@@ -187,4 +194,14 @@ document.querySelectorAll(".nav-item").forEach(btn => btn.addEventListener("clic
 document.querySelector("#themeButton").addEventListener("click", () => { state.theme = state.theme === "dark" ? "light" : "dark"; saveState(); render(); });
 document.querySelector("#todayLabel").textContent = new Intl.DateTimeFormat("en-US", {weekday:"long",month:"short",day:"numeric"}).format(new Date()).toUpperCase();
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
-render();
+window.addEventListener("gymplanner-auth", event => {
+  clearInterval(workoutClock);
+  clearInterval(restClock);
+  session = null;
+  STORAGE_KEY = `${LEGACY_STORAGE_KEY}:${event.detail.uid}`;
+  state = loadState();
+  currentView = "today";
+  document.querySelector(".bottom-nav").style.display = "grid";
+  document.querySelectorAll(".nav-item").forEach(btn => btn.classList.toggle("active", btn.dataset.view === "today"));
+  render();
+});
